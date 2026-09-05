@@ -1,3 +1,4 @@
+// full file - repository/UserRepository.java
 package com.portal.complaint.repository;
 
 import com.portal.complaint.entity.User;
@@ -12,4 +13,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(String email);
     List<User> findByRole(Role role);
     boolean existsByRole(Role role);
+
+    // used to find everyone to notify when a new complaint lands in a department
+    List<User> findByRoleAndDepartmentId(Role role, Long departmentId);
 }

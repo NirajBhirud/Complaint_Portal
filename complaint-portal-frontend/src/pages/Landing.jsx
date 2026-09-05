@@ -4,14 +4,14 @@ import LanguageSelector from '../components/LanguageSelector'
 import { useTranslation } from 'react-i18next'
 
 const DEPT_CHIPS = [
-  { key: 'roads' },
-  { key: 'waterSupply' },
-  { key: 'electricity' },
-  { key: 'sanitationGarbage' },
-  { key: 'streetLighting' },
-  { key: 'drainageSewage' },
-  { key: 'publicHealth' },
-  { key: 'parksEnvironment' }
+  { key: 'roads', descKey: 'deptRoadsDesc' },
+  { key: 'waterSupply', descKey: 'deptWaterSupplyDesc' },
+  { key: 'electricity', descKey: 'deptElectricityDesc' },
+  { key: 'sanitationGarbage', descKey: 'deptSanitationDesc' },
+  { key: 'streetLighting', descKey: 'deptStreetLightingDesc' },
+  { key: 'drainageSewage', descKey: 'deptDrainageDesc' },
+  { key: 'publicHealth', descKey: 'deptPublicHealthDesc' },
+  { key: 'parksEnvironment', descKey: 'deptParksDesc' }
 ]
 
 const STEPS = [
@@ -31,6 +31,15 @@ const STEPS = [
     textKey: 'confirmItYourselfDescription'
   }
 ]
+
+const FEATURES = [
+  { titleKey: 'featureAiTitle', textKey: 'featureAiDescription' },
+  { titleKey: 'featurePhotoTitle', textKey: 'featurePhotoDescription' },
+  { titleKey: 'featureVerifiedTitle', textKey: 'featureVerifiedDescription' },
+  { titleKey: 'featureOversightTitle', textKey: 'featureOversightDescription' }
+]
+
+const TRUST_ITEMS = ['trustRouted', 'trustClosedByYou', 'trustMultilingual']
 
 export default function Landing() {
   const { user } = useAuth()
@@ -114,6 +123,47 @@ export default function Landing() {
 
         </div>
 
+        <div className="trust-strip">
+          {TRUST_ITEMS.map((key) => (
+            <div key={key} className="trust-item">
+              {t(key)}
+            </div>
+          ))}
+        </div>
+
+      </section>
+
+
+      {/* Platform features */}
+      <section className="section section-muted">
+
+        <h2 className="section-title">
+          {t('platformFeaturesTitle')}
+        </h2>
+
+        <p className="section-sub">
+          {t('platformFeaturesSub')}
+        </p>
+
+        <div className="feature-grid">
+
+          {FEATURES.map((f) => (
+            <div
+              key={f.titleKey}
+              className="feature-card"
+            >
+              <h3>
+                {t(f.titleKey)}
+              </h3>
+
+              <p>
+                {t(f.textKey)}
+              </p>
+            </div>
+          ))}
+
+        </div>
+
       </section>
 
 
@@ -163,15 +213,21 @@ export default function Landing() {
           {t('complaintsAutomaticallyRouted')}
         </p>
 
-        <div className="dept-chips">
+        <div className="dept-grid">
 
           {DEPT_CHIPS.map((d) => (
-            <span
+            <div
               key={d.key}
-              className="dept-chip"
+              className="dept-card"
             >
-              {t(d.key)}
-            </span>
+              <h3>
+                {t(d.key)}
+              </h3>
+
+              <p>
+                {t(d.descKey)}
+              </p>
+            </div>
           ))}
 
         </div>
@@ -206,13 +262,41 @@ export default function Landing() {
       {/* Footer */}
       <footer className="site-footer">
 
-        <span>
-          Nagrik Seva — {t('publicGrievancePortal')}
-        </span>
+        <div className="site-footer-cols">
 
-        <span>
-          {t('footerDescription')}
-        </span>
+          <div className="site-footer-brand">
+            <span className="site-header-brand">
+              Nagrik Seva
+            </span>
+            <p>
+              {t('footerDescription')}
+            </p>
+          </div>
+
+          <div className="site-footer-links">
+
+            <div className="site-footer-links-col">
+              <span className="site-footer-heading">
+                {t('footerForCitizens')}
+              </span>
+              <Link to="/citizen/register">{t('reportIssue')}</Link>
+              <Link to="/citizen/login">{t('trackExistingComplaint')}</Link>
+            </div>
+
+            <div className="site-footer-links-col">
+              <span className="site-footer-heading">
+                {t('footerForGovernment')}
+              </span>
+              <Link to="/gov/login">{t('governmentLogin')}</Link>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div className="site-footer-bottom">
+          Nagrik Seva — {t('publicGrievancePortal')}
+        </div>
 
       </footer>
 

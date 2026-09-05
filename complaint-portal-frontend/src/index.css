@@ -446,6 +446,95 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   border-radius: 999px;
 }
 
+/* ============ Trust strip (hero) ============ */
+.trust-strip {
+  display: flex;
+  gap: 28px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 34px;
+  padding-top: 26px;
+  border-top: 1px solid var(--line);
+}
+.trust-item {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  font-size: 0.87rem;
+  color: var(--ink-soft);
+  max-width: 220px;
+}
+.trust-item::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--marigold);
+  flex-shrink: 0;
+  transform: translateY(-2px);
+}
+
+/* ============ Platform features ============ */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+.feature-card {
+  background: var(--surface);
+  padding: 26px 28px;
+}
+.feature-card h3 { margin-bottom: 6px; }
+.feature-card p { font-size: 0.9rem; margin-bottom: 0; }
+
+/* ============ Department cards ============ */
+.dept-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+.dept-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+}
+.dept-card h3 { font-size: 0.96rem; margin-bottom: 5px; }
+.dept-card p { font-size: 0.84rem; margin-bottom: 0; }
+
+/* ============ Footer columns ============ */
+.site-footer-cols {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  flex-wrap: wrap;
+  padding: 40px 44px 26px;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+.site-footer-brand { max-width: 340px; }
+.site-footer-brand .site-header-brand { display: block; margin-bottom: 8px; }
+.site-footer-brand p { font-size: 0.88rem; margin-bottom: 0; }
+.site-footer-links { display: flex; gap: 56px; flex-wrap: wrap; }
+.site-footer-heading {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ink-faint);
+  margin-bottom: 10px;
+}
+.site-footer-links-col { display: flex; flex-direction: column; gap: 8px; }
+.site-footer-links-col a { font-size: 0.88rem; color: var(--ink-soft); }
+.site-footer-links-col a:hover { color: var(--ink); }
+.site-footer-bottom {
+  border-top: 1px solid var(--line);
+  padding: 16px 44px;
+  font-size: 0.82rem;
+  color: var(--ink-faint);
+  text-align: center;
+}
+
 .gov-callout {
   background: var(--ink);
   color: #fff;
@@ -459,15 +548,6 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 .gov-callout h2 { color: #fff; margin-bottom: 6px; }
 .gov-callout p { color: #B9C2D6; max-width: 480px; margin: 0; }
 
-.site-footer {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 22px 44px;
-  font-size: 0.82rem;
-  color: var(--ink-faint);
-}
 .landing-brand { text-align: center; max-width: 480px; margin-bottom: 36px; }
 .landing-brand-mark {
   font-family: var(--font-display);
@@ -544,10 +624,19 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 .stat-num { font-family: var(--font-display); font-size: 2.1rem; font-weight: 600; color: var(--ink); line-height: 1; }
 .stat-label { font-size: 0.85rem; color: var(--ink-faint); margin-top: 4px; }
 
+@media (max-width: 900px) {
+  .dept-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
 @media (max-width: 720px) {
   .site-header { padding: 16px 20px; flex-wrap: wrap; gap: 12px; }
   .hero { padding: 50px 20px 40px; }
   .hero-title { font-size: 1.9rem; }
+  .trust-strip { flex-direction: column; align-items: center; gap: 14px; }
+  .feature-grid { grid-template-columns: 1fr; }
+  .dept-grid { grid-template-columns: 1fr; }
   .gov-callout { padding: 32px 24px; text-align: center; justify-content: center; }
-  .site-footer { padding: 20px 24px; flex-direction: column; text-align: center; }
+  .site-footer-cols { padding: 32px 24px 20px; flex-direction: column; gap: 26px; }
+  .site-footer-links { gap: 32px; }
+  .site-footer-bottom { padding: 14px 24px; }
 }

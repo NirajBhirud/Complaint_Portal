@@ -206,6 +206,9 @@ const resources = {
     footerDescription:
       "Built for residents and the departments that serve them.",
 
+    footerForCitizens: "For citizens",
+    footerForGovernment: "For government",
+
     // Departments
     roads: "Roads",
     waterSupply: "Water Supply",
@@ -215,6 +218,15 @@ const resources = {
     drainageSewage: "Drainage & Sewage",
     publicHealth: "Public Health",
     parksEnvironment: "Parks & Environment",
+
+    deptRoadsDesc: "Potholes, damaged roads, and encroachments on carriageways.",
+    deptWaterSupplyDesc: "Leakages, low pressure, and contamination in the water supply.",
+    deptElectricityDesc: "Power outages, damaged poles, and exposed wiring.",
+    deptSanitationDesc: "Missed collections, overflowing bins, and public cleanliness.",
+    deptStreetLightingDesc: "Broken or dark streetlights along roads and public spaces.",
+    deptDrainageDesc: "Blocked drains, sewage overflow, and waterlogging.",
+    deptPublicHealthDesc: "Unhygienic conditions, stray animal concerns, and pest issues.",
+    deptParksDesc: "Park upkeep, tree damage, and local pollution.",
       // Language
       language: "Language",
       english: "English",
@@ -273,7 +285,31 @@ const resources = {
       confirmItYourselfDescription:
         "When the department says it's fixed, you have the final word — upload a photo and close it yourself.",
 
-      everyDepartmentOnePortal: "Every department, one portal"
+      everyDepartmentOnePortal: "Every department, one portal",
+
+      platformFeaturesTitle: "Built for real accountability",
+      platformFeaturesSub:
+        "Every complaint is tracked, verified, and only closed when you say so.",
+
+      featureAiTitle: "Help whenever you need it",
+      featureAiDescription:
+        "An assistant answers questions about the portal any time — finding the right login, explaining the process, or guiding you to raise a complaint.",
+
+      featurePhotoTitle: "Evidence on both sides",
+      featurePhotoDescription:
+        "Every complaint is backed by a photo when it's raised, and the department must show a photo of the completed work too.",
+
+      featureVerifiedTitle: "You have the final word",
+      featureVerifiedDescription:
+        "A complaint is only marked resolved when you confirm it yourself — the department alone can't close it.",
+
+      featureOversightTitle: "Overseen from the top",
+      featureOversightDescription:
+        "A commissioner monitors every department's progress, so nothing quietly stalls in a queue.",
+
+      trustRouted: "Routed to the right department automatically",
+      trustClosedByYou: "Closed only when you confirm it",
+      trustMultilingual: "Works in English, Hindi and Marathi"
     }
   },
 
@@ -482,6 +518,9 @@ const resources = {
     footerDescription:
       "नागरिक आणि त्यांची सेवा करणाऱ्या विभागांसाठी तयार केलेले पोर्टल.",
 
+    footerForCitizens: "नागरिकांसाठी",
+    footerForGovernment: "सरकारसाठी",
+
     // Departments
     roads: "रस्ते",
     waterSupply: "पाणीपुरवठा",
@@ -491,6 +530,15 @@ const resources = {
     drainageSewage: "निचरा आणि सांडपाणी",
     publicHealth: "सार्वजनिक आरोग्य",
     parksEnvironment: "उद्याने आणि पर्यावरण",
+
+    deptRoadsDesc: "खड्डे, खराब रस्ते आणि रस्त्यावरील अतिक्रमणे.",
+    deptWaterSupplyDesc: "गळती, कमी दाब आणि पाणीपुरवठ्यातील दूषितता.",
+    deptElectricityDesc: "वीजपुरवठा खंडित होणे, खराब खांब आणि उघडे वायर.",
+    deptSanitationDesc: "कचरा न उचलणे, कचराकुंड्या भरून वाहणे आणि सार्वजनिक स्वच्छता.",
+    deptStreetLightingDesc: "रस्त्यांवरील आणि सार्वजनिक ठिकाणी बंद किंवा तुटलेले पथदिवे.",
+    deptDrainageDesc: "बंद गटारे, सांडपाणी वाहणे आणि पाणी साचणे.",
+    deptPublicHealthDesc: "अस्वच्छ परिस्थिती, भटक्या प्राण्यांच्या समस्या आणि किडींचा त्रास.",
+    deptParksDesc: "उद्यानांची देखभाल, झाडांचे नुकसान आणि स्थानिक प्रदूषण.",
       // Language
       language: "भाषा",
       english: "English",
@@ -552,7 +600,31 @@ const resources = {
         "विभागाने तक्रार सोडवली असल्याचे सांगितल्यानंतर अंतिम खात्री तुम्ही स्वतः करू शकता — फोटो अपलोड करा आणि तक्रार बंद करा.",
 
       everyDepartmentOnePortal:
-        "प्रत्येक विभाग, एकच पोर्टल"
+        "प्रत्येक विभाग, एकच पोर्टल",
+
+      platformFeaturesTitle: "खऱ्या जबाबदारीसाठी तयार केलेले",
+      platformFeaturesSub:
+        "प्रत्येक तक्रारीचा पाठपुरावा आणि पडताळणी केली जाते, आणि तुम्ही सांगाल तेव्हाच ती बंद केली जाते.",
+
+      featureAiTitle: "जेव्हा गरज असेल तेव्हा मदत",
+      featureAiDescription:
+        "सहाय्यक पोर्टलबद्दलच्या प्रश्नांची उत्तरे कधीही देतो — योग्य लॉगिन शोधणे, प्रक्रिया समजावणे किंवा तक्रार नोंदवण्यास मार्गदर्शन करणे.",
+
+      featurePhotoTitle: "दोन्ही बाजूंनी पुरावा",
+      featurePhotoDescription:
+        "तक्रार नोंदवताना फोटो आवश्यक असतो, आणि काम पूर्ण झाल्यावर विभागालाही फोटो दाखवावा लागतो.",
+
+      featureVerifiedTitle: "अंतिम निर्णय तुमचा",
+      featureVerifiedDescription:
+        "तक्रार तेव्हाच निकाली निघाल्याचे मानले जाते जेव्हा तुम्ही स्वतः त्याची खात्री करता — विभाग एकट्याने ती बंद करू शकत नाही.",
+
+      featureOversightTitle: "वरून देखरेख",
+      featureOversightDescription:
+        "आयुक्त प्रत्येक विभागाच्या प्रगतीवर लक्ष ठेवतात, त्यामुळे कोणतीही तक्रार शांतपणे रेंगाळत राहत नाही.",
+
+      trustRouted: "आपोआप योग्य विभागाकडे पाठवली जाते",
+      trustClosedByYou: "तुम्ही खात्री केल्यावरच बंद होते",
+      trustMultilingual: "इंग्रजी, हिंदी आणि मराठीत उपलब्ध"
     }
   },
 
@@ -762,6 +834,9 @@ const resources = {
     footerDescription:
       "निवासियों और उनकी सेवा करने वाले विभागों के लिए बनाया गया पोर्टल।",
 
+    footerForCitizens: "नागरिकों के लिए",
+    footerForGovernment: "सरकार के लिए",
+
     // Departments
     roads: "सड़कें",
     waterSupply: "जल आपूर्ति",
@@ -771,6 +846,15 @@ const resources = {
     drainageSewage: "जल निकासी और सीवेज",
     publicHealth: "सार्वजनिक स्वास्थ्य",
     parksEnvironment: "पार्क और पर्यावरण",
+
+    deptRoadsDesc: "गड्ढे, क्षतिग्रस्त सड़कें, और सड़कों पर अतिक्रमण।",
+    deptWaterSupplyDesc: "रिसाव, कम दबाव, और जलापूर्ति में मिलावट।",
+    deptElectricityDesc: "बिजली कटौती, क्षतिग्रस्त खंभे, और खुले तार।",
+    deptSanitationDesc: "कचरा न उठना, भरे हुए कूड़ेदान, और सार्वजनिक स्वच्छता।",
+    deptStreetLightingDesc: "सड़कों और सार्वजनिक स्थानों पर खराब या बंद स्ट्रीट लाइटें।",
+    deptDrainageDesc: "बंद नालियाँ, सीवेज ओवरफ्लो, और जलभराव।",
+    deptPublicHealthDesc: "अस्वच्छ स्थितियाँ, आवारा पशुओं की समस्या, और कीट-प्रकोप।",
+    deptParksDesc: "पार्कों का रखरखाव, पेड़ों को नुकसान, और स्थानीय प्रदूषण।",
       // Language
       language: "भाषा",
       english: "English",
@@ -832,7 +916,31 @@ const resources = {
         "जब विभाग कहे कि समस्या का समाधान हो गया है, तो अंतिम पुष्टि आप स्वयं कर सकते हैं — फोटो अपलोड करें और शिकायत बंद करें।",
 
       everyDepartmentOnePortal:
-        "हर विभाग, एक पोर्टल"
+        "हर विभाग, एक पोर्टल",
+
+      platformFeaturesTitle: "वास्तविक जवाबदेही के लिए बनाया गया",
+      platformFeaturesSub:
+        "हर शिकायत को ट्रैक और सत्यापित किया जाता है, और वह तभी बंद होती है जब आप कहें।",
+
+      featureAiTitle: "जब भी ज़रूरत हो, मदद मौजूद",
+      featureAiDescription:
+        "एक सहायक पोर्टल से जुड़े सवालों के जवाब कभी भी देता है — सही लॉगिन ढूँढना, प्रक्रिया समझाना, या शिकायत दर्ज करने में मार्गदर्शन करना।",
+
+      featurePhotoTitle: "दोनों तरफ से सबूत",
+      featurePhotoDescription:
+        "शिकायत दर्ज करते समय फोटो ज़रूरी है, और काम पूरा होने पर विभाग को भी फोटो दिखानी होती है।",
+
+      featureVerifiedTitle: "अंतिम फैसला आपका",
+      featureVerifiedDescription:
+        "शिकायत तभी हल मानी जाती है जब आप स्वयं इसकी पुष्टि करें — अकेले विभाग इसे बंद नहीं कर सकता।",
+
+      featureOversightTitle: "ऊपर से निगरानी",
+      featureOversightDescription:
+        "एक आयुक्त हर विभाग की प्रगति पर नज़र रखता है, ताकि कोई शिकायत चुपचाप अटकी न रहे।",
+
+      trustRouted: "अपने आप सही विभाग को भेजी जाती है",
+      trustClosedByYou: "आपकी पुष्टि के बाद ही बंद होती है",
+      trustMultilingual: "अंग्रेज़ी, हिंदी और मराठी में उपलब्ध"
     }
   }
 };

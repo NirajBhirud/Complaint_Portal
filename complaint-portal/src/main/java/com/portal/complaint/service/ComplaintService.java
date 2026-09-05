@@ -7,6 +7,7 @@ import com.portal.complaint.entity.ComplaintStatusHistory;
 import com.portal.complaint.entity.Department;
 import com.portal.complaint.entity.User;
 import com.portal.complaint.enums.ComplaintStatus;
+import com.portal.complaint.enums.Role;
 import com.portal.complaint.repository.ComplaintRepository;
 import com.portal.complaint.repository.ComplaintStatusHistoryRepository;
 import com.portal.complaint.repository.DepartmentRepository;
@@ -26,6 +27,7 @@ public class ComplaintService {
     private final UserRepository userRepo;
     private final ComplaintStatusHistoryRepository historyRepo;
     private final FileStorageService fileStorageService;
+    private final EmailService emailService;
 
     // ---- citizen raises a new complaint ----
     public Complaint raiseComplaint(String citizenEmail, ComplaintRequest req, MultipartFile beforeImage) {
@@ -51,6 +53,10 @@ public class ComplaintService {
 
         complaintRepo.save(complaint);
         logHistory(complaint, ComplaintStatus.PENDING, "complaint raised by citizen", citizen.getFullName());
+
+        // every officer in this department gets notified a new complaint landed
+        List<User> officers = userRepo.findByRoleAndDepartmentId(Role.DEPT_OFFICER, dept.getId());
+        emailService.notifyOfficersOfNewComplaint(complaint, officers);
 
         return complaint;
     }
@@ -84,12 +90,18 @@ public class ComplaintService {
             throw new IllegalStateException("officers cant mark a complaint completed - only the citizen can, after confirming the repair");
         }
 
+        ComplaintStatus previousStatus = complaint.getStatus();
+
         complaint.setAssignedOfficer(officer);
         complaint.setStatus(req.getNewStatus());
         complaint.setOfficerRemark(req.getRemarks());
         complaintRepo.save(complaint);
 
         logHistory(complaint, req.getNewStatus(), req.getRemarks(), officer.getFullName());
+
+        // citizen gets emailed on every status change the department makes
+        emailService.notifyCitizenOfStatusChange(complaint, previousStatus);
+
         return complaint;
     }
 
@@ -117,6 +129,13 @@ public class ComplaintService {
         complaintRepo.save(complaint);
 
         logHistory(complaint, ComplaintStatus.COMPLETED, remarks, citizen.getFullName());
+
+        // the department that worked on it should know the citizen actually confirmed it closed
+        if (complaint.getDepartment() != null) {
+            List<User> officers = userRepo.findByRoleAndDepartmentId(Role.DEPT_OFFICER, complaint.getDepartment().getId());
+            emailService.notifyOfficersOfCitizenAction(complaint, officers, "Citizen confirmed this complaint as completed");
+        }
+
         return complaint;
     }
 
@@ -135,6 +154,13 @@ public class ComplaintService {
         complaint.setStatus(ComplaintStatus.REOPENED);
         complaintRepo.save(complaint);
         logHistory(complaint, ComplaintStatus.REOPENED, reason, citizen.getFullName());
+
+        // department needs to know the citizen wasnt satisfied and it needs another look
+        if (complaint.getDepartment() != null) {
+            List<User> officers = userRepo.findByRoleAndDepartmentId(Role.DEPT_OFFICER, complaint.getDepartment().getId());
+            emailService.notifyOfficersOfCitizenAction(complaint, officers, "Citizen reopened this complaint — the issue is not resolved");
+        }
+
         return complaint;
     }
 
