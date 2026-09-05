@@ -1,0 +1,12 @@
+# Maven
+**/target/
+
+# Node
+**/node_modules/
+
+# Environment variables
+.env
+.env.*
+
+# Uploaded files
+**/uploads/
