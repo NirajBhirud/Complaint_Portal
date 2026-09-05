@@ -43,8 +43,8 @@ public class SecurityConfig {
                 // more specific officer-queue path has to come BEFORE the general /api/complaints/** rule below
                 .requestMatchers("/api/complaints/officer/**").hasAnyRole("DEPT_OFFICER", "COMMISSIONER")
                 .requestMatchers("/api/complaints/*/status").hasAnyRole("DEPT_OFFICER", "COMMISSIONER")
-                .requestMatchers("/api/complaints/**").authenticated()
-                .requestMatchers("/api/chatbot/**").authenticated()
+                    .requestMatchers("/api/complaints/**").authenticated()
+                    .requestMatchers("/api/chatbot/**").permitAll() // must be reachable pre-login so it can guide public visitors to the right login/flow
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

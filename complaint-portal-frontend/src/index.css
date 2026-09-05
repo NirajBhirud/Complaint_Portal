@@ -376,6 +376,8 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 .chat-bubble { padding: 9px 12px; border-radius: 10px; max-width: 82%; font-size: 0.87rem; line-height: 1.42; }
 .chat-bubble-user { background: var(--ink); color: #fff; align-self: flex-end; border-bottom-right-radius: 3px; }
 .chat-bubble-bot { background: var(--paper); color: var(--ink); align-self: flex-start; border-bottom-left-radius: 3px; }
+.chat-action-btn { margin-top: 7px; display: block; padding: 7px 12px; border-radius: var(--radius-sm); border: 1px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; font-size: 0.82rem; font-weight: 600; }
+.chat-action-btn:hover { background: var(--ink); color: #fff; }
 .chat-input-row { display: flex; border-top: 1px solid var(--line); padding: 9px; gap: 7px; }
 .chat-input { flex: 1; padding: 8px 10px; border-radius: var(--radius-sm); border: 1px solid var(--line); font-size: 0.87rem; }
 .chat-send { padding: 8px 14px; border-radius: var(--radius-sm); border: none; background: var(--ink); color: #fff; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
