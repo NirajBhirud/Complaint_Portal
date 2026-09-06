@@ -309,7 +309,84 @@ const resources = {
 
       trustRouted: "Routed to the right department automatically",
       trustClosedByYou: "Closed only when you confirm it",
-      trustMultilingual: "Works in English, Hindi and Marathi"
+      trustMultilingual: "Works in English, Hindi and Marathi",
+      locationHelp:
+        "You can enter a landmark or address. For a more accurate location, use your device's GPS.",
+
+      exactLocation:
+        "Exact GPS location",
+
+      exactLocationDescription:
+        "Share your current location so the department can find the issue precisely.",
+
+      useMyLocation:
+        "Use my current location",
+
+      detectingLocation:
+        "Detecting location…",
+
+      locationCaptured:
+        "Location captured successfully.",
+
+      locationUnavailable:
+        "Unable to access your location. Please allow location permission and try again.",
+
+      locationAccuracy:
+        "Accuracy",
+
+      latitude:
+        "Latitude",
+
+      longitude:
+        "Longitude",
+
+      clearLocation:
+        "Clear location",
+
+      previewLocationOnMap:
+        "Preview location on map",
+
+      locationInformation:
+        "Location information",
+
+      address:
+        "Address",
+
+      viewOnMap:
+        "View on map",
+
+      openExactLocation:
+        "Open exact location",
+
+      noGpsLocation:
+        "GPS location was not provided for this complaint.",
+
+      departmentQueueDescription:
+        "Complaints routed to your department, with exact citizen locations when available.",
+
+      loadingQueue:
+        "Loading department queue…",
+
+      noComplaintsInDepartment:
+        "No complaints in your department right now.",
+
+      officerRemarkPlaceholder:
+        "Add a remark for this update…",
+
+      assignToSelf:
+        "Assign to self",
+
+      markInProgress:
+        "Mark in progress",
+
+      markResolved:
+        "Mark resolved",
+
+      citizenMustConfirm:
+        "Only the citizen can mark this complaint as completed after confirming the repair.",
+
+      updateFailed:
+        "Update failed."
     }
   },
 
@@ -624,7 +701,84 @@ const resources = {
 
       trustRouted: "आपोआप योग्य विभागाकडे पाठवली जाते",
       trustClosedByYou: "तुम्ही खात्री केल्यावरच बंद होते",
-      trustMultilingual: "इंग्रजी, हिंदी आणि मराठीत उपलब्ध"
+      trustMultilingual: "इंग्रजी, हिंदी आणि मराठीत उपलब्ध",
+      locationHelp:
+        "आपण पत्ता किंवा जवळची खूण लिहू शकता. अधिक अचूक स्थानासाठी आपल्या डिव्हाइसचे GPS वापरा.",
+
+      exactLocation:
+        "अचूक GPS स्थान",
+
+      exactLocationDescription:
+        "विभागाला समस्या नेमक्या ठिकाणी शोधता यावी यासाठी आपले सध्याचे स्थान शेअर करा.",
+
+      useMyLocation:
+        "माझे सध्याचे स्थान वापरा",
+
+      detectingLocation:
+        "स्थान शोधत आहे…",
+
+      locationCaptured:
+        "स्थान यशस्वीरित्या मिळाले.",
+
+      locationUnavailable:
+        "आपले स्थान मिळवता आले नाही. कृपया स्थानाची परवानगी द्या आणि पुन्हा प्रयत्न करा.",
+
+      locationAccuracy:
+        "अचूकता",
+
+      latitude:
+        "अक्षांश",
+
+      longitude:
+        "रेखांश",
+
+      clearLocation:
+        "स्थान काढा",
+
+      previewLocationOnMap:
+        "नकाशावर स्थान पहा",
+
+      locationInformation:
+        "स्थानाची माहिती",
+
+      address:
+        "पत्ता",
+
+      viewOnMap:
+        "नकाशावर पहा",
+
+      openExactLocation:
+        "अचूक स्थान उघडा",
+
+      noGpsLocation:
+        "या तक्रारीसाठी GPS स्थान दिलेले नाही.",
+
+      departmentQueueDescription:
+        "आपल्या विभागाकडे पाठवलेल्या तक्रारी आणि उपलब्ध असल्यास नागरिकांनी दिलेले अचूक स्थान पहा.",
+
+      loadingQueue:
+        "विभागीय तक्रारी लोड होत आहेत…",
+
+      noComplaintsInDepartment:
+        "सध्या आपल्या विभागात कोणत्याही तक्रारी नाहीत.",
+
+      officerRemarkPlaceholder:
+        "या अपडेटसाठी टिप्पणी लिहा…",
+
+      assignToSelf:
+        "स्वतःला नियुक्त करा",
+
+      markInProgress:
+        "प्रगतीमध्ये चिन्हांकित करा",
+
+      markResolved:
+        "निराकरण झाले असे चिन्हांकित करा",
+
+      citizenMustConfirm:
+        "दुरुस्तीची पुष्टी केल्यानंतर फक्त नागरिकच तक्रार पूर्ण झाल्याचे चिन्हांकित करू शकतो.",
+
+      updateFailed:
+        "अपडेट अयशस्वी झाले."
     }
   },
 
@@ -940,7 +1094,84 @@ const resources = {
 
       trustRouted: "अपने आप सही विभाग को भेजी जाती है",
       trustClosedByYou: "आपकी पुष्टि के बाद ही बंद होती है",
-      trustMultilingual: "अंग्रेज़ी, हिंदी और मराठी में उपलब्ध"
+      trustMultilingual: "अंग्रेज़ी, हिंदी और मराठी में उपलब्ध",
+      locationHelp:
+        "आप पता या नज़दीकी स्थान लिख सकते हैं। अधिक सटीक स्थान के लिए अपने डिवाइस का GPS इस्तेमाल करें।",
+
+      exactLocation:
+        "सटीक GPS स्थान",
+
+      exactLocationDescription:
+        "विभाग को समस्या का सटीक स्थान खोजने में मदद करने के लिए अपना वर्तमान स्थान साझा करें।",
+
+      useMyLocation:
+        "मेरा वर्तमान स्थान इस्तेमाल करें",
+
+      detectingLocation:
+        "स्थान खोजा जा रहा है…",
+
+      locationCaptured:
+        "स्थान सफलतापूर्वक प्राप्त हुआ।",
+
+      locationUnavailable:
+        "आपका स्थान प्राप्त नहीं किया जा सका। कृपया स्थान की अनुमति दें और फिर प्रयास करें।",
+
+      locationAccuracy:
+        "सटीकता",
+
+      latitude:
+        "अक्षांश",
+
+      longitude:
+        "देशांतर",
+
+      clearLocation:
+        "स्थान हटाएं",
+
+      previewLocationOnMap:
+        "मानचित्र पर स्थान देखें",
+
+      locationInformation:
+        "स्थान की जानकारी",
+
+      address:
+        "पता",
+
+      viewOnMap:
+        "मानचित्र पर देखें",
+
+      openExactLocation:
+        "सटीक स्थान खोलें",
+
+      noGpsLocation:
+        "इस शिकायत के लिए GPS स्थान उपलब्ध नहीं कराया गया है।",
+
+      departmentQueueDescription:
+        "आपके विभाग को भेजी गई शिकायतें और उपलब्ध होने पर नागरिक द्वारा दिया गया सटीक स्थान देखें।",
+
+      loadingQueue:
+        "विभागीय शिकायतें लोड हो रही हैं…",
+
+      noComplaintsInDepartment:
+        "अभी आपके विभाग में कोई शिकायत नहीं है।",
+
+      officerRemarkPlaceholder:
+        "इस अपडेट के लिए टिप्पणी लिखें…",
+
+      assignToSelf:
+        "स्वयं को असाइन करें",
+
+      markInProgress:
+        "प्रगति में चिह्नित करें",
+
+      markResolved:
+        "समाधान किया गया चिह्नित करें",
+
+      citizenMustConfirm:
+        "मरम्मत की पुष्टि करने के बाद केवल नागरिक ही शिकायत को पूर्ण कर सकता है।",
+
+      updateFailed:
+        "अपडेट विफल हुआ।"
     }
   }
 };

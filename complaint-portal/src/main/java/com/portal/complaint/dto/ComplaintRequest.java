@@ -5,17 +5,37 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-// used when citizen raises a new complaint (multipart form, image sent separately)
 @Data
 public class ComplaintRequest {
+
     @NotBlank
     private String title;
 
     @NotBlank
     private String description;
 
+    /*
+     * Human-readable address / landmark.
+     *
+     * Example:
+     * Near Shivaji Chowk, Ward 5
+     */
     private String location;
 
+    /*
+     * Exact GPS coordinates captured from the browser.
+     *
+     * These remain optional because the citizen can deny
+     * location permission.
+     */
+    private Double latitude;
+
+    private Double longitude;
+
+    /*
+     * Determines which government department receives
+     * the complaint.
+     */
     @NotNull
-    private DeptCategory category; // e.g "ROADS" -> gets auto routed to roads dept
+    private DeptCategory category;
 }

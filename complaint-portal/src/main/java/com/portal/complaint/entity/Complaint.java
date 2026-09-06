@@ -26,8 +26,24 @@ public class Complaint {
     @Column(length = 2000)
     private String description;
 
-    // rough location text, keep it simple for now - could add lat/lng later
+    /*
+     * Human-readable location entered by the citizen.
+     *
+     * Example:
+     * "Near Shivaji Chowk, Ward 5"
+     */
+    @Column(length = 500)
     private String location;
+
+    /*
+     * Exact GPS location captured from the citizen's device.
+     *
+     * These are optional because the citizen may deny
+     * browser location permission.
+     */
+    private Double latitude;
+
+    private Double longitude;
 
     @ManyToOne
     @JoinColumn(name = "citizen_id", nullable = false)
@@ -44,23 +60,32 @@ public class Complaint {
     @Enumerated(EnumType.STRING)
     private ComplaintStatus status;
 
-    // photo citizen uploads when raising the complaint
+    /*
+     * Photo uploaded when the complaint is raised.
+     */
     private String beforeImageUrl;
 
-    // photo citizen uploads to confirm the repair is actually done
+    /*
+     * Photo uploaded by citizen after the officer says
+     * the issue has been fixed.
+     */
     private String afterImageUrl;
 
-    // officer's remark when marking resolved, citizen can read this before confirming
+    /*
+     * Remark added by department officer.
+     */
     @Column(length = 1000)
     private String officerRemark;
 
     private LocalDateTime createdAt;
+
     private LocalDateTime updatedAt;
 
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+
         if (this.status == null) {
             this.status = ComplaintStatus.PENDING;
         }

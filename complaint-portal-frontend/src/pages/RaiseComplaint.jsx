@@ -17,44 +17,166 @@ const CATEGORIES = [
 ]
 
 export default function RaiseComplaint() {
+
   const [form, setForm] = useState({
     title: '',
     description: '',
     location: '',
-    category: 'ROADS'
+    category: 'ROADS',
+    latitude: null,
+    longitude: null
   })
 
   const [image, setImage] = useState(null)
+
   const [error, setError] = useState('')
+
   const [submitting, setSubmitting] = useState(false)
 
+  const [locating, setLocating] = useState(false)
+
+  const [locationMsg, setLocationMsg] = useState('')
+
   const navigate = useNavigate()
+
   const { t } = useTranslation()
 
-  const onChange = (e) =>
+  const onChange = (e) => {
+
     setForm({
       ...form,
       [e.target.name]: e.target.value
     })
+  }
+
+  // =========================================================
+  // GET EXACT CURRENT LOCATION
+  // =========================================================
+
+  const handleUseMyLocation = () => {
+
+    if (!navigator.geolocation) {
+
+      setLocationMsg(
+        t('locationUnavailable')
+      )
+
+      return
+    }
+
+    setLocating(true)
+
+    setLocationMsg(
+      t('detectingLocation')
+    )
+
+    navigator.geolocation.getCurrentPosition(
+
+      (position) => {
+
+        const {
+          latitude,
+          longitude,
+          accuracy
+        } = position.coords
+
+        setForm((previous) => ({
+          ...previous,
+          latitude,
+          longitude
+        }))
+
+        setLocationMsg(
+          `${t('locationCaptured')} ${t('locationAccuracy')}: ${Math.round(accuracy)} m`
+        )
+
+        setLocating(false)
+      },
+
+      (error) => {
+
+        console.error(
+          'Location error:',
+          error
+        )
+
+        setLocationMsg(
+          t('locationUnavailable')
+        )
+
+        setLocating(false)
+      },
+
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0
+      }
+    )
+  }
+
+  // =========================================================
+  // CLEAR LOCATION
+  // =========================================================
+
+  const handleClearLocation = () => {
+
+    setForm((previous) => ({
+      ...previous,
+      latitude: null,
+      longitude: null
+    }))
+
+    setLocationMsg('')
+  }
+
+  // =========================================================
+  // GOOGLE MAPS URL
+  // =========================================================
+
+  const getMapUrl = () => {
+
+    if (
+      form.latitude === null ||
+      form.longitude === null
+    ) {
+      return '#'
+    }
+
+    return `https://www.google.com/maps?q=${form.latitude},${form.longitude}`
+  }
+
+  // =========================================================
+  // SUBMIT
+  // =========================================================
 
   const handleSubmit = async (e) => {
+
     e.preventDefault()
+
     setError('')
+
     setSubmitting(true)
 
     try {
+
       const fd = new FormData()
 
       fd.append(
         'data',
         new Blob(
           [JSON.stringify(form)],
-          { type: 'application/json' }
+          {
+            type: 'application/json'
+          }
         )
       )
 
       if (image) {
-        fd.append('image', image)
+        fd.append(
+          'image',
+          image
+        )
       }
 
       await api.post(
@@ -62,18 +184,28 @@ export default function RaiseComplaint() {
         fd,
         {
           headers: {
-            'Content-Type': 'multipart/form-data'
+            'Content-Type':
+              'multipart/form-data'
           }
         }
       )
 
       navigate('/citizen')
+
     } catch (err) {
+
+      console.error(
+        'Complaint submission error:',
+        err
+      )
+
       setError(
         err.response?.data?.error ||
         t('submitComplaintError')
       )
+
     } finally {
+
       setSubmitting(false)
     }
   }
@@ -82,6 +214,7 @@ export default function RaiseComplaint() {
     <div className="page-shell">
 
       <div className="page-header">
+
         <div>
 
           <h1>
@@ -93,12 +226,14 @@ export default function RaiseComplaint() {
           </p>
 
         </div>
-      </div>
 
+      </div>
 
       <div className="panel">
 
         <form onSubmit={handleSubmit}>
+
+          {/* ISSUE TITLE */}
 
           <label
             className="field-label"
@@ -117,6 +252,7 @@ export default function RaiseComplaint() {
             required
           />
 
+          {/* DEPARTMENT */}
 
           <label
             className="field-label"
@@ -132,16 +268,23 @@ export default function RaiseComplaint() {
             value={form.category}
             onChange={onChange}
           >
-            {CATEGORIES.map(([value, labelKey]) => (
-              <option
-                key={value}
-                value={value}
-              >
-                {t(labelKey)}
-              </option>
-            ))}
+
+            {CATEGORIES.map(
+              ([value, labelKey]) => (
+
+                <option
+                  key={value}
+                  value={value}
+                >
+                  {t(labelKey)}
+                </option>
+
+              )
+            )}
+
           </select>
 
+          {/* WRITTEN LOCATION */}
 
           <label
             className="field-label"
@@ -159,6 +302,120 @@ export default function RaiseComplaint() {
             placeholder={t('locationPlaceholder')}
           />
 
+          <p
+            style={{
+              fontSize: '0.82rem',
+              color: 'var(--ink-faint)',
+              marginTop: '-10px'
+            }}
+          >
+            {t('locationHelp')}
+          </p>
+
+          {/* GPS LOCATION */}
+
+          <div
+            className="location-box"
+          >
+
+            <div>
+
+              <strong>
+                {t('exactLocation')}
+              </strong>
+
+              <p>
+                {t('exactLocationDescription')}
+              </p>
+
+            </div>
+
+            <div
+              style={{
+                display: 'flex',
+                gap: 8,
+                flexWrap: 'wrap'
+              }}
+            >
+
+              <button
+                type="button"
+                className="btn btn-ghost btn-sm"
+                onClick={handleUseMyLocation}
+                disabled={locating}
+              >
+
+                {locating
+                  ? t('detectingLocation')
+                  : t('useMyLocation')
+                }
+
+              </button>
+
+              {form.latitude !== null &&
+                form.longitude !== null && (
+
+                  <button
+                    type="button"
+                    className="btn btn-danger-ghost btn-sm"
+                    onClick={handleClearLocation}
+                  >
+                    {t('clearLocation')}
+                  </button>
+
+                )}
+
+            </div>
+
+            {locationMsg && (
+
+              <div
+                className={
+                  form.latitude !== null
+                    ? 'location-success'
+                    : 'location-message'
+                }
+              >
+                {locationMsg}
+              </div>
+
+            )}
+
+            {form.latitude !== null &&
+              form.longitude !== null && (
+
+                <div className="location-details">
+
+                  <div>
+                    <strong>
+                      {t('latitude')}:
+                    </strong>{' '}
+                    {form.latitude.toFixed(6)}
+                  </div>
+
+                  <div>
+                    <strong>
+                      {t('longitude')}:
+                    </strong>{' '}
+                    {form.longitude.toFixed(6)}
+                  </div>
+
+                  <a
+                    href={getMapUrl()}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="map-link"
+                  >
+                    {t('previewLocationOnMap')}
+                  </a>
+
+                </div>
+
+              )}
+
+          </div>
+
+          {/* DESCRIPTION */}
 
           <label
             className="field-label"
@@ -171,13 +428,14 @@ export default function RaiseComplaint() {
             id="description"
             name="description"
             className="field-textarea"
-            rows={4}
+            rows={5}
             value={form.description}
             onChange={onChange}
             required
             placeholder={t('descriptionPlaceholder')}
           />
 
+          {/* IMAGE */}
 
           <label
             className="field-label"
@@ -191,16 +449,16 @@ export default function RaiseComplaint() {
             type="file"
             accept="image/*"
             className="field-file"
-            onChange={(e) => setImage(e.target.files[0])}
+            onChange={(e) =>
+              setImage(e.target.files[0])
+            }
           />
-
 
           {error && (
             <p className="field-error">
               {error}
             </p>
           )}
-
 
           <button
             type="submit"
@@ -209,7 +467,8 @@ export default function RaiseComplaint() {
           >
             {submitting
               ? t('submitting')
-              : t('submitComplaint')}
+              : t('submitComplaint')
+            }
           </button>
 
         </form>

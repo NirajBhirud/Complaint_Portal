@@ -29,22 +29,45 @@ public class ComplaintService {
     private final FileStorageService fileStorageService;
     private final EmailService emailService;
 
-    // ---- citizen raises a new complaint ----
-    public Complaint raiseComplaint(String citizenEmail, ComplaintRequest req, MultipartFile beforeImage) {
+    // =========================================================
+    // CITIZEN RAISES COMPLAINT
+    // =========================================================
+
+    public Complaint raiseComplaint(
+            String citizenEmail,
+            ComplaintRequest req,
+            MultipartFile beforeImage
+    ) {
+
         User citizen = getUserOrThrow(citizenEmail);
 
-        // auto-route to the right dept based on the category the citizen picked
+        /*
+         * Automatically find the department using the
+         * category selected by the citizen.
+         */
         Department dept = deptRepo.findByCategory(req.getCategory())
-                .orElseThrow(() -> new IllegalArgumentException("no department configured for this category yet"));
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "No department configured for this category yet"
+                        )
+                );
 
+        /*
+         * Store complaint image if provided.
+         */
         String imgUrl = beforeImage != null && !beforeImage.isEmpty()
                 ? fileStorageService.storeFile(beforeImage)
                 : null;
 
+        /*
+         * Create complaint including GPS coordinates.
+         */
         Complaint complaint = Complaint.builder()
                 .title(req.getTitle())
                 .description(req.getDescription())
                 .location(req.getLocation())
+                .latitude(req.getLatitude())
+                .longitude(req.getLongitude())
                 .citizen(citizen)
                 .department(dept)
                 .status(ComplaintStatus.PENDING)
@@ -52,134 +75,358 @@ public class ComplaintService {
                 .build();
 
         complaintRepo.save(complaint);
-        logHistory(complaint, ComplaintStatus.PENDING, "complaint raised by citizen", citizen.getFullName());
 
-        // every officer in this department gets notified a new complaint landed
-        List<User> officers = userRepo.findByRoleAndDepartmentId(Role.DEPT_OFFICER, dept.getId());
-        emailService.notifyOfficersOfNewComplaint(complaint, officers);
+        logHistory(
+                complaint,
+                ComplaintStatus.PENDING,
+                "Complaint raised by citizen",
+                citizen.getFullName()
+        );
+
+        /*
+         * Notify all officers belonging to the selected department.
+         */
+        List<User> officers =
+                userRepo.findByRoleAndDepartmentId(
+                        Role.DEPT_OFFICER,
+                        dept.getId()
+                );
+
+        emailService.notifyOfficersOfNewComplaint(
+                complaint,
+                officers
+        );
 
         return complaint;
     }
+
+    // =========================================================
+    // CITIZEN COMPLAINTS
+    // =========================================================
 
     public List<Complaint> getMyComplaints(String citizenEmail) {
+
         User citizen = getUserOrThrow(citizenEmail);
-        return complaintRepo.findByCitizenIdOrderByCreatedAtDesc(citizen.getId());
+
+        return complaintRepo
+                .findByCitizenIdOrderByCreatedAtDesc(citizen.getId());
     }
 
-    public List<Complaint> getComplaintsForOfficerDept(String officerEmail) {
+    // =========================================================
+    // OFFICER DEPARTMENT QUEUE
+    // =========================================================
+
+    public List<Complaint> getComplaintsForOfficerDept(
+            String officerEmail
+    ) {
+
         User officer = getUserOrThrow(officerEmail);
+
         if (officer.getDepartment() == null) {
-            throw new IllegalStateException("this officer isnt linked to a department");
+            throw new IllegalStateException(
+                    "This officer is not linked to a department"
+            );
         }
-        return complaintRepo.findByDepartmentIdOrderByCreatedAtDesc(officer.getDepartment().getId());
+
+        return complaintRepo
+                .findByDepartmentIdOrderByCreatedAtDesc(
+                        officer.getDepartment().getId()
+                );
     }
+
+    // =========================================================
+    // GET SINGLE COMPLAINT
+    // =========================================================
 
     public Complaint getById(Long id) {
+
         return complaintRepo.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("complaint not found"));
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Complaint not found"
+                        )
+                );
     }
 
-    // ---- officer updates status (assign self / in progress / mark resolved) ----
-    // NOTE: officer can only push it as far as RESOLVED_PENDING_CONFIRMATION.
-    // they CANNOT set it to COMPLETED directly - that button doesnt even exist for them.
-    public Complaint updateStatusByOfficer(Long complaintId, String officerEmail, StatusUpdateRequest req) {
+    // =========================================================
+    // OFFICER UPDATES STATUS
+    // =========================================================
+
+    public Complaint updateStatusByOfficer(
+            Long complaintId,
+            String officerEmail,
+            StatusUpdateRequest req
+    ) {
+
         User officer = getUserOrThrow(officerEmail);
+
         Complaint complaint = getById(complaintId);
 
+        /*
+         * Officer must belong to a department.
+         */
+        if (officer.getDepartment() == null) {
+            throw new IllegalStateException(
+                    "Officer is not linked to a department"
+            );
+        }
+
+        /*
+         * IMPORTANT:
+         *
+         * Prevent an officer from modifying complaints
+         * belonging to another department.
+         */
+        if (complaint.getDepartment() == null ||
+                !complaint.getDepartment()
+                        .getId()
+                        .equals(officer.getDepartment().getId())) {
+
+            throw new IllegalStateException(
+                    "You cannot update a complaint belonging to another department"
+            );
+        }
+
+        /*
+         * Officer cannot directly complete a complaint.
+         * Citizen must confirm the repair.
+         */
         if (req.getNewStatus() == ComplaintStatus.COMPLETED) {
-            throw new IllegalStateException("officers cant mark a complaint completed - only the citizen can, after confirming the repair");
+
+            throw new IllegalStateException(
+                    "Officers cannot mark a complaint completed. " +
+                            "Only the citizen can confirm completion."
+            );
         }
 
-        ComplaintStatus previousStatus = complaint.getStatus();
+        ComplaintStatus previousStatus =
+                complaint.getStatus();
 
+        /*
+         * Assign the officer who performed the update.
+         */
         complaint.setAssignedOfficer(officer);
+
         complaint.setStatus(req.getNewStatus());
+
         complaint.setOfficerRemark(req.getRemarks());
+
         complaintRepo.save(complaint);
 
-        logHistory(complaint, req.getNewStatus(), req.getRemarks(), officer.getFullName());
+        logHistory(
+                complaint,
+                req.getNewStatus(),
+                req.getRemarks(),
+                officer.getFullName()
+        );
 
-        // citizen gets emailed on every status change the department makes
-        emailService.notifyCitizenOfStatusChange(complaint, previousStatus);
+        /*
+         * Notify citizen about status change.
+         */
+        emailService.notifyCitizenOfStatusChange(
+                complaint,
+                previousStatus
+        );
 
         return complaint;
     }
 
-    // ---- citizen confirms the repair is actually done, uploads after-photo ----
-    // this is the one and only path to COMPLETED status
-    public Complaint confirmCompletion(Long complaintId, String citizenEmail, MultipartFile afterImage, String remarks) {
+    // =========================================================
+    // CITIZEN CONFIRMS COMPLETION
+    // =========================================================
+
+    public Complaint confirmCompletion(
+            Long complaintId,
+            String citizenEmail,
+            MultipartFile afterImage,
+            String remarks
+    ) {
+
         User citizen = getUserOrThrow(citizenEmail);
+
         Complaint complaint = getById(complaintId);
 
-        if (!complaint.getCitizen().getId().equals(citizen.getId())) {
-            throw new IllegalStateException("you can only confirm completion on your own complaints");
+        /*
+         * Only complaint owner can confirm.
+         */
+        if (!complaint.getCitizen()
+                .getId()
+                .equals(citizen.getId())) {
+
+            throw new IllegalStateException(
+                    "You can only confirm completion of your own complaints"
+            );
         }
 
-        if (complaint.getStatus() != ComplaintStatus.RESOLVED_PENDING_CONFIRMATION) {
-            throw new IllegalStateException("this complaint isnt waiting on your confirmation yet");
+        /*
+         * Complaint must be waiting for citizen confirmation.
+         */
+        if (complaint.getStatus() !=
+                ComplaintStatus.RESOLVED_PENDING_CONFIRMATION) {
+
+            throw new IllegalStateException(
+                    "This complaint is not waiting for your confirmation yet"
+            );
         }
 
+        /*
+         * Citizen must provide proof photo.
+         */
         if (afterImage == null || afterImage.isEmpty()) {
-            throw new IllegalArgumentException("please upload a photo of the repaired place to confirm completion");
+
+            throw new IllegalArgumentException(
+                    "Please upload a photo of the repaired location"
+            );
         }
 
-        String afterUrl = fileStorageService.storeFile(afterImage);
+        String afterUrl =
+                fileStorageService.storeFile(afterImage);
+
         complaint.setAfterImageUrl(afterUrl);
-        complaint.setStatus(ComplaintStatus.COMPLETED);
+
+        complaint.setStatus(
+                ComplaintStatus.COMPLETED
+        );
+
         complaintRepo.save(complaint);
 
-        logHistory(complaint, ComplaintStatus.COMPLETED, remarks, citizen.getFullName());
+        logHistory(
+                complaint,
+                ComplaintStatus.COMPLETED,
+                remarks,
+                citizen.getFullName()
+        );
 
-        // the department that worked on it should know the citizen actually confirmed it closed
+        /*
+         * Notify department officers.
+         */
         if (complaint.getDepartment() != null) {
-            List<User> officers = userRepo.findByRoleAndDepartmentId(Role.DEPT_OFFICER, complaint.getDepartment().getId());
-            emailService.notifyOfficersOfCitizenAction(complaint, officers, "Citizen confirmed this complaint as completed");
+
+            List<User> officers =
+                    userRepo.findByRoleAndDepartmentId(
+                            Role.DEPT_OFFICER,
+                            complaint.getDepartment().getId()
+                    );
+
+            emailService.notifyOfficersOfCitizenAction(
+                    complaint,
+                    officers,
+                    "Citizen confirmed this complaint as completed"
+            );
         }
 
         return complaint;
     }
 
-    // ---- citizen rejects the officer's resolution, sends it back ----
-    public Complaint reopenComplaint(Long complaintId, String citizenEmail, String reason) {
+    // =========================================================
+    // CITIZEN REOPENS COMPLAINT
+    // =========================================================
+
+    public Complaint reopenComplaint(
+            Long complaintId,
+            String citizenEmail,
+            String reason
+    ) {
+
         User citizen = getUserOrThrow(citizenEmail);
+
         Complaint complaint = getById(complaintId);
 
-        if (!complaint.getCitizen().getId().equals(citizen.getId())) {
-            throw new IllegalStateException("you can only reopen your own complaints");
-        }
-        if (complaint.getStatus() != ComplaintStatus.RESOLVED_PENDING_CONFIRMATION) {
-            throw new IllegalStateException("only a resolution waiting on your confirmation can be reopened");
+        if (!complaint.getCitizen()
+                .getId()
+                .equals(citizen.getId())) {
+
+            throw new IllegalStateException(
+                    "You can only reopen your own complaints"
+            );
         }
 
-        complaint.setStatus(ComplaintStatus.REOPENED);
+        if (complaint.getStatus() !=
+                ComplaintStatus.RESOLVED_PENDING_CONFIRMATION) {
+
+            throw new IllegalStateException(
+                    "Only complaints waiting for confirmation can be reopened"
+            );
+        }
+
+        complaint.setStatus(
+                ComplaintStatus.REOPENED
+        );
+
         complaintRepo.save(complaint);
-        logHistory(complaint, ComplaintStatus.REOPENED, reason, citizen.getFullName());
 
-        // department needs to know the citizen wasnt satisfied and it needs another look
+        logHistory(
+                complaint,
+                ComplaintStatus.REOPENED,
+                reason,
+                citizen.getFullName()
+        );
+
         if (complaint.getDepartment() != null) {
-            List<User> officers = userRepo.findByRoleAndDepartmentId(Role.DEPT_OFFICER, complaint.getDepartment().getId());
-            emailService.notifyOfficersOfCitizenAction(complaint, officers, "Citizen reopened this complaint — the issue is not resolved");
+
+            List<User> officers =
+                    userRepo.findByRoleAndDepartmentId(
+                            Role.DEPT_OFFICER,
+                            complaint.getDepartment().getId()
+                    );
+
+            emailService.notifyOfficersOfCitizenAction(
+                    complaint,
+                    officers,
+                    "Citizen reopened this complaint — the issue is not resolved"
+            );
         }
 
         return complaint;
     }
 
-    public List<ComplaintStatusHistory> getTimeline(Long complaintId) {
-        return historyRepo.findByComplaintIdOrderByChangedAtAsc(complaintId);
+    // =========================================================
+    // TIMELINE
+    // =========================================================
+
+    public List<ComplaintStatusHistory> getTimeline(
+            Long complaintId
+    ) {
+
+        return historyRepo
+                .findByComplaintIdOrderByChangedAtAsc(
+                        complaintId
+                );
     }
 
-    private void logHistory(Complaint complaint, ComplaintStatus status, String remarks, String changedBy) {
-        ComplaintStatusHistory hist = ComplaintStatusHistory.builder()
-                .complaint(complaint)
-                .status(status)
-                .remarks(remarks)
-                .changedByName(changedBy)
-                .build();
-        historyRepo.save(hist);
+    // =========================================================
+    // HISTORY
+    // =========================================================
+
+    private void logHistory(
+            Complaint complaint,
+            ComplaintStatus status,
+            String remarks,
+            String changedBy
+    ) {
+
+        ComplaintStatusHistory history =
+                ComplaintStatusHistory.builder()
+                        .complaint(complaint)
+                        .status(status)
+                        .remarks(remarks)
+                        .changedByName(changedBy)
+                        .build();
+
+        historyRepo.save(history);
     }
+
+    // =========================================================
+    // USER LOOKUP
+    // =========================================================
 
     private User getUserOrThrow(String email) {
+
         return userRepo.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("user not found"));
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "User not found"
+                        )
+                );
     }
 }

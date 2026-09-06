@@ -640,3 +640,112 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   .site-footer-links { gap: 32px; }
   .site-footer-bottom { padding: 14px 24px; }
 }
+/* =========================================================
+   LOCATION / GPS
+   ========================================================= */
+
+.location-box {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin: 4px 0 20px 0;
+}
+
+.location-box strong {
+  color: var(--ink);
+}
+
+.location-box p {
+  font-size: 0.84rem;
+  margin: 4px 0 12px 0;
+}
+
+.location-success {
+  margin-top: 12px;
+  padding: 9px 12px;
+  background: var(--success-soft);
+  color: var(--success);
+  border-radius: var(--radius-sm);
+  font-size: 0.84rem;
+}
+
+.location-message {
+  margin-top: 10px;
+  color: var(--ink-faint);
+  font-size: 0.84rem;
+}
+
+.location-details {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  font-size: 0.84rem;
+  color: var(--ink-soft);
+}
+
+.location-details strong {
+  color: var(--ink);
+}
+
+.map-link {
+  font-weight: 600;
+}
+
+.map-button {
+  margin-top: 8px;
+  display: inline-block;
+}
+
+.officer-location-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 15px 16px;
+  margin: 14px 0 16px;
+}
+
+.officer-location-title {
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 7px;
+}
+
+.officer-address {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+}
+
+.officer-coordinates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  font-size: 0.82rem;
+  color: var(--ink-faint);
+}
+
+.officer-coordinates strong {
+  color: var(--ink-soft);
+}
+
+@media (max-width: 720px) {
+
+  .officer-location-card {
+    align-items: flex-start;
+  }
+
+  .officer-location-card .btn {
+    width: 100%;
+  }
+
+}

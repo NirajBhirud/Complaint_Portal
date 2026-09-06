@@ -1,3 +1,4 @@
+// FULL FILE — replace service/EmailService.java entirely with this
 package com.portal.complaint.service;
 
 import com.portal.complaint.entity.Complaint;
@@ -160,12 +161,21 @@ public class EmailService {
 
     // a small, consistent fact table used across every email
     private String complaintFactTable(Complaint c) {
+        String mapRow = "";
+        if (c.getLatitude() != null && c.getLongitude() != null) {
+            String mapUrl = "https://www.google.com/maps?q=%s,%s".formatted(c.getLatitude(), c.getLongitude());
+            mapRow = """
+                <tr><td style="padding:6px 0;color:#4B5768;">Exact location</td><td style="padding:6px 0;"><a href="%s" style="color:#2C5F8A;">Open in Google Maps →</a></td></tr>
+                """.formatted(mapUrl);
+        }
+
         return """
             <table style="width:100%%;border-collapse:collapse;margin-top:14px;font-size:14px;">
                 <tr><td style="padding:6px 0;color:#4B5768;width:140px;">Complaint ID</td><td style="padding:6px 0;color:#14213D;font-weight:600;">#%d</td></tr>
                 <tr><td style="padding:6px 0;color:#4B5768;">Title</td><td style="padding:6px 0;color:#14213D;">%s</td></tr>
                 <tr><td style="padding:6px 0;color:#4B5768;">Department</td><td style="padding:6px 0;color:#14213D;">%s</td></tr>
                 <tr><td style="padding:6px 0;color:#4B5768;">Location</td><td style="padding:6px 0;color:#14213D;">%s</td></tr>
+                %s
                 <tr><td style="padding:6px 0;color:#4B5768;vertical-align:top;">Description</td><td style="padding:6px 0;color:#14213D;">%s</td></tr>
             </table>
             """.formatted(
@@ -173,6 +183,7 @@ public class EmailService {
                 escape(c.getTitle()),
                 escape(c.getDepartment() != null ? c.getDepartment().getName() : "Unassigned"),
                 escape(c.getLocation() != null ? c.getLocation() : "—"),
+                mapRow,
                 escape(c.getDescription())
         );
     }
