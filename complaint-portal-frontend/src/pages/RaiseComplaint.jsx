@@ -1,7 +1,9 @@
+// FULL FILE — replace pages/RaiseComplaint.jsx entirely with this
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import api from '../api/axios'
+import LocationPicker from '../components/LocationPicker'
 
 const CATEGORIES = [
   ['ROADS', 'roads'],
@@ -33,10 +35,6 @@ export default function RaiseComplaint() {
 
   const [submitting, setSubmitting] = useState(false)
 
-  const [locating, setLocating] = useState(false)
-
-  const [locationMsg, setLocationMsg] = useState('')
-
   const navigate = useNavigate()
 
   const { t } = useTranslation()
@@ -50,100 +48,17 @@ export default function RaiseComplaint() {
   }
 
   // =========================================================
-  // GET EXACT CURRENT LOCATION
+  // LOCATION PICKER CALLBACK
+  // handles GPS, map click/drag, and search-box selections -
+  // all three funnel through LocationPicker's onLocationChange
   // =========================================================
 
-  const handleUseMyLocation = () => {
-
-    if (!navigator.geolocation) {
-
-      setLocationMsg(
-        t('locationUnavailable')
-      )
-
-      return
-    }
-
-    setLocating(true)
-
-    setLocationMsg(
-      t('detectingLocation')
-    )
-
-    navigator.geolocation.getCurrentPosition(
-
-      (position) => {
-
-        const {
-          latitude,
-          longitude,
-          accuracy
-        } = position.coords
-
-        setForm((previous) => ({
-          ...previous,
-          latitude,
-          longitude
-        }))
-
-        setLocationMsg(
-          `${t('locationCaptured')} ${t('locationAccuracy')}: ${Math.round(accuracy)} m`
-        )
-
-        setLocating(false)
-      },
-
-      (error) => {
-
-        console.error(
-          'Location error:',
-          error
-        )
-
-        setLocationMsg(
-          t('locationUnavailable')
-        )
-
-        setLocating(false)
-      },
-
-      {
-        enableHighAccuracy: true,
-        timeout: 15000,
-        maximumAge: 0
-      }
-    )
-  }
-
-  // =========================================================
-  // CLEAR LOCATION
-  // =========================================================
-
-  const handleClearLocation = () => {
-
+  const handleLocationChange = (loc) => {
     setForm((previous) => ({
       ...previous,
-      latitude: null,
-      longitude: null
+      latitude: loc.latitude,
+      longitude: loc.longitude
     }))
-
-    setLocationMsg('')
-  }
-
-  // =========================================================
-  // GOOGLE MAPS URL
-  // =========================================================
-
-  const getMapUrl = () => {
-
-    if (
-      form.latitude === null ||
-      form.longitude === null
-    ) {
-      return '#'
-    }
-
-    return `https://www.google.com/maps?q=${form.latitude},${form.longitude}`
   }
 
   // =========================================================
@@ -312,108 +227,13 @@ export default function RaiseComplaint() {
             {t('locationHelp')}
           </p>
 
-          {/* GPS LOCATION */}
+          {/* EXACT LOCATION - GPS, map pick/search, or drag-to-adjust */}
 
-          <div
-            className="location-box"
-          >
-
-            <div>
-
-              <strong>
-                {t('exactLocation')}
-              </strong>
-
-              <p>
-                {t('exactLocationDescription')}
-              </p>
-
-            </div>
-
-            <div
-              style={{
-                display: 'flex',
-                gap: 8,
-                flexWrap: 'wrap'
-              }}
-            >
-
-              <button
-                type="button"
-                className="btn btn-ghost btn-sm"
-                onClick={handleUseMyLocation}
-                disabled={locating}
-              >
-
-                {locating
-                  ? t('detectingLocation')
-                  : t('useMyLocation')
-                }
-
-              </button>
-
-              {form.latitude !== null &&
-                form.longitude !== null && (
-
-                  <button
-                    type="button"
-                    className="btn btn-danger-ghost btn-sm"
-                    onClick={handleClearLocation}
-                  >
-                    {t('clearLocation')}
-                  </button>
-
-                )}
-
-            </div>
-
-            {locationMsg && (
-
-              <div
-                className={
-                  form.latitude !== null
-                    ? 'location-success'
-                    : 'location-message'
-                }
-              >
-                {locationMsg}
-              </div>
-
-            )}
-
-            {form.latitude !== null &&
-              form.longitude !== null && (
-
-                <div className="location-details">
-
-                  <div>
-                    <strong>
-                      {t('latitude')}:
-                    </strong>{' '}
-                    {form.latitude.toFixed(6)}
-                  </div>
-
-                  <div>
-                    <strong>
-                      {t('longitude')}:
-                    </strong>{' '}
-                    {form.longitude.toFixed(6)}
-                  </div>
-
-                  <a
-                    href={getMapUrl()}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="map-link"
-                  >
-                    {t('previewLocationOnMap')}
-                  </a>
-
-                </div>
-
-              )}
-
-          </div>
+          <LocationPicker
+            latitude={form.latitude}
+            longitude={form.longitude}
+            onLocationChange={handleLocationChange}
+          />
 
           {/* DESCRIPTION */}
 

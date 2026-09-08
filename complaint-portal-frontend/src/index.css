@@ -79,6 +79,8 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 
 .btn-ghost { background: transparent; color: var(--ink); border-color: var(--line); }
 .btn-ghost:hover:not(:disabled) { background: var(--surface); }
+.btn-secondary { background: var(--progress-soft); color: var(--progress); border-color: transparent; }
+.btn-secondary:hover:not(:disabled) { background: #D8E6EF; }
 
 .btn-danger-ghost { background: transparent; color: var(--danger); border-color: var(--danger); }
 .btn-danger-ghost:hover:not(:disabled) { background: var(--danger-soft); }
@@ -699,6 +701,140 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 .map-button {
   margin-top: 8px;
   display: inline-block;
+}
+/* =========================================================
+   LOCATION SEARCH (inside the map picker)
+   ========================================================= */
+
+.location-search {
+  position: relative;
+  margin-bottom: 4px;
+}
+
+.location-search-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 9px 12px;
+}
+
+.location-search-icon {
+  font-size: 0.9rem;
+  color: var(--ink-faint);
+  flex-shrink: 0;
+}
+
+.location-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 0.92rem;
+  font-family: var(--font-body);
+  background: transparent;
+  color: var(--ink);
+}
+
+.location-search-spinner {
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+}
+
+.location-search-results {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 20px rgba(20, 33, 61, 0.12);
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.location-search-result {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  padding: 10px 12px;
+  font-size: 0.86rem;
+  color: var(--ink);
+  cursor: pointer;
+  font-weight: 400;
+}
+.location-search-result:last-child { border-bottom: none; }
+.location-search-result:hover { background: var(--paper); }
+
+.location-search-empty {
+  padding: 12px;
+  font-size: 0.84rem;
+  color: var(--ink-faint);
+}
+/* =========================================================
+   CENTER-FIXED PIN MAP PICKER (Uber/Ola style)
+   ========================================================= */
+
+.map-pin-frame {
+  position: relative;
+  height: 360px;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #d9dee7;
+}
+
+.map-pin-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -100%);
+  transform-origin: bottom center;
+  z-index: 500;
+  pointer-events: none;
+  font-size: 38px;
+  line-height: 1;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.35));
+  transition: transform 160ms ease, filter 160ms ease;
+}
+
+.map-pin-overlay.dragging {
+  transform: translate(-50%, -112%) scale(1.08);
+  filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.4));
+}
+
+.map-pin-shadow-dot {
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  width: 9px;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 50%;
+  transform: translate(-50%, 50%);
+  filter: blur(0.5px);
+}
+
+.map-pin-coords-badge {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(20, 33, 61, 0.85);
+  color: #fff;
+  font-size: 0.78rem;
+  font-family: var(--font-body);
+  padding: 5px 12px;
+  border-radius: 999px;
+  z-index: 500;
+  pointer-events: none;
+  white-space: nowrap;
 }
 
 .officer-location-card {
