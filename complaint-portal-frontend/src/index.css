@@ -135,13 +135,17 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 .rail {
   width: 232px;
   flex-shrink: 0;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
   background: var(--ink);
   color: #fff;
   display: flex;
   flex-direction: column;
   padding: 26px 20px;
+  overflow-y: auto;
 }
-
 .rail-brand {
   font-family: var(--font-display);
   font-size: 1.2rem;
@@ -154,7 +158,12 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   margin-bottom: 34px;
 }
 
-.rail-nav { display: flex; flex-direction: column; gap: 3px; flex: 1; }
+.rail-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
 
 .rail-link {
   color: #C6CEDE;
